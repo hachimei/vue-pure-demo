@@ -45,7 +45,7 @@
 </template>
 
 <script>
-const { Map, Popup } = window.mapboxgl
+const { Map } = window.mapboxgl
 
 export default {
   name: 'device-factory',
@@ -73,7 +73,7 @@ export default {
     this.source = 'gjsonSource'
   },
   mounted () {
-    let simple = {
+    const simple = {
       version: 8,
       name: 'Bright',
       sources: {},
@@ -222,12 +222,12 @@ export default {
       this.map.resize() // 首次加载地图后resize，否则canvas高度不合适
     },
     mapClickHandler (e) {
-      let feature = e.features[0]
+      const feature = e.features[0]
       if (!feature) return
 
       console.log('feature formdata ')
       this.selectedFeature = feature
-      let item = feature.properties
+      const item = feature.properties
       this.gjsonItemTitle = item.name
       this.formData = {
         id: item.id,
