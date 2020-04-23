@@ -11,9 +11,9 @@ axios.interceptors.request.use(
     if (token) { // 判断是否存在token，如果存在的话，则每个http header都加上token
       config.headers.token = token
     }
-    /* if (config.url.indexOf(url) === -1) {
-      config.url = url + config.url // 拼接完整请求路径
-    } */
+    if (config.url.indexOf(config.baseURL) === -1) {
+      config.url = config.baseURL + config.url // 拼接完整请求路径
+    }
     return config
   },
   err => {
