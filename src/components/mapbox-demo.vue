@@ -77,6 +77,14 @@ export default {
       version: 8,
       name: 'Bright',
       sources: {},
+      sprite: window.origin + '/static/mb-local/sprites/sprite.json', // 自定义图标 sprite.json@2x.json sprite.json@2x.png
+      glyphs:
+          window.origin + '/static/mb-local/fonts/{fontstack}/{range}.pbf', // 自定义字体
+      light: {
+        anchor: 'map',
+        color: '#ffffff',
+        intensity: 0.1
+      },
       layers: [
         {
           id: 'background',
@@ -180,8 +188,6 @@ export default {
         id: 'pointlayerhighlight',
         type: 'fill-extrusion',
         source: this.source,
-        sprite: '/static/mb-local/sprites/sprite.json',
-        glyphs: '/static/mb-local/fonts/hwxk/{fontstack}/{range}.pbf',
         filter: ['==', 'name', ''],
         paint: {
           // See the Mapbox Style Specification for details on data expressions.

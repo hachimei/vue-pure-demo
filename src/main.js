@@ -10,7 +10,7 @@ import '@/assets/mapbox/mapbox-gl.css'
 
 Vue.use(ViewUI)
 // Vue.use(VueAxios, axios)
-Vue.prototype.$axios = axios // this.$axios.post
+Vue.prototype.$axios = axios // this.$axios.axios.post
 
 Vue.prototype.$Message.config({
   top: 50,
