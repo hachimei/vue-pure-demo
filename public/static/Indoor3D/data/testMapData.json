@@ -8,7 +8,7 @@
         "PubPoint": [
           {
             "Brief": "",
-            "Name_en": "Cashier",
+            "Name_en": "收银台Cashier",
             "Outline": [
               [
                 [
@@ -23,7 +23,7 @@
           },
           {
             "Brief": "",
-            "Name_en": "Toilet",
+            "Name_en": "洗手间Toilet",
             "Outline": [
               [
                 [
@@ -4128,7 +4128,7 @@
             "BrandShop": 25881
           },
           {
-            "Name_en": "C&A",
+            "Name_en": "C&A三星",
             "Brief": "",
             "Center": [
               -350.3333333333333,
