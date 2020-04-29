@@ -3,10 +3,8 @@ import IDM from './IDM'
 import Mall from './Mall'
 import IndoorMap2d from './IndoorMap2d'
 import IndoorMap3d from './IndoorMap3d'
-import default2dTheme from './theme/2d'
-import default3dTheme from './theme/3d'
-export const imgPath = ''
-export const libPath = ''
+import { theme2D, theme3D } from './theme'
+// export const libPath = './'
 
 const THREE = window.THREE
 const Detector = window.Detector
@@ -84,9 +82,9 @@ function ParseModel (json, is3d, theme) {
 
     if (theme === undefined) {
       if (is3d) {
-        theme = default3dTheme
+        theme = theme3D
       } else {
-        theme = default2dTheme
+        theme = theme2D
       }
     }
 

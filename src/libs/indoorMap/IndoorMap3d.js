@@ -1,6 +1,6 @@
 import { IndoorMapLoader } from './indoorMap'
 import Rect from './rect'
-import default3dTheme from './theme/3d'
+import { theme3D } from './theme'
 
 const THREE = window.THREE
 // import * as THREE from 'three'
@@ -81,7 +81,7 @@ const IndoorMap3d = function (mapdiv) {
   // load the map by the json file name
   this.load = function (fileName, callback) {
     var loader = new IndoorMapLoader(true)
-    _theme = default3dTheme
+    _theme = theme3D
     loader.load(fileName, function (mall) {
       _this.mall = mall
       _scene.add(_this.mall.root)
@@ -102,7 +102,7 @@ const IndoorMap3d = function (mapdiv) {
   // parse the json file
   this.parse = function (json) {
     if (_theme == null) {
-      _theme = default3dTheme
+      _theme = theme3D
     }
     _this.mall = IndoorMapLoader.parse(json, _this.is3d, _theme)
     _scene.mall = _this.mall

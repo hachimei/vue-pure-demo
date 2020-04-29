@@ -4,7 +4,7 @@
 import IDM from './IDM'
 import { IndoorMapLoader } from './indoorMap'
 import Rect from './rect'
-import default2dTheme from './theme/2d'
+import { theme2D } from './theme'
 const ImageLoader = window.THREE.ImageLoader
 
 // ---------------------IndoorMap2D class-----------------
@@ -75,7 +75,7 @@ const IndoorMap2d = function (mapdiv) {
   // load the map by the json file name
   this.load = function (fileName, callback) {
     _this.reset()
-    _theme = default2dTheme
+    _theme = theme2D
     var loader = new IndoorMapLoader(false)
     loader.load(fileName, function (mall) {
       _this.mall = mall
@@ -89,9 +89,9 @@ const IndoorMap2d = function (mapdiv) {
   this.parse = function (json) {
     _this.reset()
     if (_theme === null) {
-      _theme = default2dTheme
+      _theme = theme2D
     }
-    _this.mall = ParseModel(json, _this.is3d, _theme)
+    _this.mall = IndoorMapLoader.parse(json, _this.is3d, _theme)
     _this.showFloor(_this.mall.getDefaultFloorId())
 
     _mapDiv.style.background = _theme.background

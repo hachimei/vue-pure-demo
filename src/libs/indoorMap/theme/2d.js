@@ -1,6 +1,4 @@
-import { imgPath } from '../indoorMap'
-
-const theme = {
+export default {
   name: 'test', // theme's name
   background: '#F2F2F2', // background color
 
@@ -122,33 +120,5 @@ const theme = {
         }
     }
     return roomStyle
-  },
-
-  // room wires' style
-  strokeStyle: {
-    color: '#666666',
-    opacity: 0.5,
-    transparent: true,
-    linewidth: 1
-  },
-
-  fontStyle: {
-    opacity: 1,
-    textAlign: 'center',
-    textBaseline: 'middle',
-    color: '#333333',
-    fontsize: 13,
-    fontface: "'Lantinghei SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Helvetica Neue', Helvetica, STHeiTi, Arial, sans-serif  "
-  },
-
-  pubPointImg: {
-    11001: imgPath + '/toilet.png',
-    11002: imgPath + '/ATM.png',
-    21001: imgPath + '/stair.png',
-    22006: imgPath + '/entry.png',
-    21002: imgPath + '/escalator.png',
-    21003: imgPath + '/lift.png'
   }
 }
-
-export default theme
