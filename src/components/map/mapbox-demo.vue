@@ -126,10 +126,12 @@
 
 <script>
 import config from '@/config'
-import { getGeojson, saveGeojson } from '@/api'
+import { getGeojson, saveGeojson, getRoutePlan, getFloorList } from '@/api'
 
 const { Map, Marker } = window.mapboxgl
-const { modelId, buildId } = window
+// const modelId = window.modelId || 102158813982700 // 有路网
+const modelId = window.modelId || 102158797443300 // 无路网，但改过样式
+const buildId = window.buildId || 100158754713900
 // const { Map, Popup } = window.mapboxgl
 
 export default {
@@ -149,9 +151,10 @@ export default {
       editGeojsonItem: false,
       editPOI: false,
       editWall: false,
-      isRoutePlan: false,
+      isRoutePlan: true,
       isDraw: false,
       points: [], // 路径规则坐标的集合
+      curFloorId: 0,
       /* maskStyle: {
         opacity: 0
       }, */
@@ -169,8 +172,8 @@ export default {
   },
   mounted () {
     // test fectch gjson
-    this.fetchGeojson()
-    console.log('modelId:' + modelId + ', buildId:' + buildId)
+    this.fetchFloorList()
+    // this.fetchGeojson()
   },
   methods: {
     loadedGeojson () {
@@ -232,12 +235,25 @@ export default {
         this.onColorChange(this.oldFormData.color)
       }
     },
+    // 获取楼层列表
+    async fetchFloorList () {
+      const id = buildId
+      try {
+        const res = await getFloorList(id)
+        const floorList = res.data || []
+        this.curFloorId = floorList.length ? floorList[0].id : 0
+        this.fetchGeojson()
+      } catch (err) {
+        console.error('获取楼层列表 error:' + err)
+        this.$Message.error(err)
+      }
+    },
     // 获取Geojson数据
     async fetchGeojson () {
       const option = {
-        modelId: modelId || 102158797443300,
-        buildId: buildId || 100158754713900,
-        floorId: 101158754716400
+        modelId: modelId,
+        buildId: buildId,
+        floorId: this.curFloorId
       }
       // const self = this
       try {
@@ -272,45 +288,42 @@ export default {
       this.isDraw = false
       this.isRoutePlan = false
       this.map.getCanvas().style.cursor = ''
-      const url = 'https://restapi.amap.com/v3/direction/walking'
-      const start = this.points[0].map(res => {
-        return res.toFixed(5)
-      })
-      const end = this.points[1].map(res => {
-        return res.toFixed(5)
-      })
-      const params = {
-        key: this.key,
-        origin: start.join(','),
-        destination: end.join(',')
+      const start = this.points[0]
+      const end = this.points[1]
+      const option = {
+        buildId: buildId,
+        modelId: modelId,
+        coor: 0,
+        startLoc: [this.curFloorId, start[0], start[1]],
+        endLoc: [this.curFloorId, end[0], end[1]]
       }
       try {
-        const res = await this.$axios.axios.get(url, { params: params })
-        this.paths = res.route.paths
+        const res = await getRoutePlan(option)
+        this.paths = []
         const geojson = {
           type: 'FeatureCollection',
           features: []
         }
-        for (let i = 0; i < this.paths.length; i++) {
-          const steps = this.paths[i].steps
-          for (let j = 0; j < steps.length; j++) {
-            const step = steps[j]
-            let polyline = step.polyline
-            polyline = polyline.split(';')
-            polyline = polyline.map(p => {
-              return p.split(',').map(Number)
-            })
-            const feat = {
-              type: 'Feature',
-              properties: {},
-              geometry: {
-                type: 'LineString',
-                coordinates: polyline
-              }
-            }
-            geojson.features.push(feat)
-          }
-        }
+        // for (let i = 0; i < this.paths.length; i++) {
+        //   const steps = this.paths[i].steps
+        //   for (let j = 0; j < steps.length; j++) {
+        //     const step = steps[j]
+        //     let polyline = step.polyline
+        //     polyline = polyline.split(';')
+        //     polyline = polyline.map(p => {
+        //       return p.split(',').map(Number)
+        //     })
+        //     const feat = {
+        //       type: 'Feature',
+        //       properties: {},
+        //       geometry: {
+        //         type: 'LineString',
+        //         coordinates: polyline
+        //       }
+        //     }
+        //     geojson.features.push(feat)
+        //   }
+        // }
         this.map.getSource('path').setData(geojson)
       } catch (err) {
         console.error('error:' + err)
@@ -388,8 +401,8 @@ export default {
     },
     submit () {
       const option = {
-        modelId: modelId || 102158797443300,
-        buildId: buildId || 100158754713900,
+        modelId: modelId,
+        buildId: buildId,
         styleType: this.formData.enableModifyType ? 0 : 1, // 0设施类型样式 1具体数据样式
         layerType: this.editPOI ? this.symbolLayerId : this.editWall ? this.wallLayerId : this.baseLayerId // 图层类型 POI或Cell_Function
       }
