@@ -321,6 +321,7 @@ const IndoorMap3d = function (mapdiv) {
       var images = _theme.pubPointImg
       for (var key in images) {
         var texture = THREE.ImageUtils.loadTexture(images[key], undefined, redraw)
+        texture.minFilter = THREE.LinearFilter
         var material = new THREE.SpriteMaterial({ map: texture })
         _spriteMaterials[key] = material
       }
@@ -528,6 +529,7 @@ const IndoorMap3d = function (mapdiv) {
 
     // canvas contents will be used for a texture
     var texture = new THREE.Texture(canvas)
+    texture.minFilter = THREE.LinearFilter
     texture.needsUpdate = true
 
     var spriteMaterial = new THREE.SpriteMaterial(
