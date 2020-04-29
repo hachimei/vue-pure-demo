@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import demo from '_c/mapbox-demo'
+import demo from '_c/map/mapbox-demo'
 
 export default {
   components: { demo },
@@ -31,4 +31,13 @@ export default {
   #app {
     .size;
   }
+
+  .marker {
+  background-image: url('./assets/mapbox/img/map_icon.jpg');
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
 </style>

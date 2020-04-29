@@ -1,24 +1,57 @@
 import axios from 'axios'
-import config from '@/config'
 
-axios.defaults.baseURL = config.baseURL
-// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+class HttpRequest {
+  constructor (baseUrl) {
+    this.baseUrl = baseUrl
+    this.queue = {}
+  }
 
-axios.interceptors.request.use(
-  config => {
-    const token = localStorage.getItem('x-auth-token')
-    if (token) { // 判断是否存在token，如果存在的话，则每个http header都加上token
-      config.headers.token = token
-    }
-    if (config.url.indexOf(config.baseURL) === -1) {
-      config.url = config.baseURL + config.url // 拼接完整请求路径
+  getInsideConfig () {
+    const config = {
+      baseURL: this.baseUrl,
+      headers: {
+        // Authorization: 'Basic T1BFTl8zRF9QTEFURk9STTo0NGM3MGUwOWQ0MTY0MjUwYTQ5YzdiNWM0NTBhMmM1Zg=='
+      }
     }
     return config
-  },
-  err => {
-    return Promise.reject(err)
-  })
-// http://192.168.10.78:8080/v1/shape/geojson?modelId=102158760782400&buildId=100158754713900&floorId=101158754716400
+  }
 
-export default { axios }
+  destroy (url) {
+    delete this.queue[url]
+    if (!Object.keys(this.queue).length) {
+    }
+  }
+
+  interceptors (instance, url) {
+    // 请求拦截
+    instance.interceptors.request.use(config => {
+      if (!Object.keys(this.queue).length) {
+      }
+      this.queue[url] = true
+      return config
+    }, error => {
+      return Promise.reject(error)
+    })
+    // 响应拦截
+    instance.interceptors.response.use(res => {
+      this.destroy(url)
+      const { data, status } = res
+      return { data, status }
+    }, error => {
+      this.destroy(url)
+      return Promise.reject(error)
+    })
+  }
+
+  request (options) {
+    if (options.method === 'get' && options.params && typeof options.params !== 'object') {
+      options.url += '/' + options.params
+      options.params = {}
+    }
+    const instance = axios.create()
+    options = Object.assign(this.getInsideConfig(), options)
+    this.interceptors(instance, options.url)
+    return instance(options)
+  }
+}
+export default HttpRequest
